@@ -1,1 +1,1 @@
-# S-P_500_Data_Visualization
+# S&P 500 Data Visualization
