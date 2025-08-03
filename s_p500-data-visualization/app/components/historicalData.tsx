@@ -1,7 +1,7 @@
 "use client";
 import * as d3 from "d3";
 import styles from "../page.module.css";
-import { useEffect, useRef } from "react";
+import { useEffect, useState, useRef } from "react";
 import { annotation, annotationLabel } from "d3-svg-annotation";
 import { getBasePath } from "../../next.config";
 
@@ -18,9 +18,12 @@ export default function HistoricalData() {
 
     const width = 800;
     const height = 500;
-    const margin = { top: 30, right: 50, bottom: 70, left: 70 };
+    const margin = { top: 10, right: 50, bottom: 50, left: 70 };
 
     const basePath = getBasePath();
+
+    const [startYear, setStartYear] = useState(1980);
+    const [endYear, setEndYear] = useState(2023);
 
     useEffect(() => {
         d3.csv(`${basePath}/data/index_data.csv`, function (d) {
@@ -30,7 +33,7 @@ export default function HistoricalData() {
                 tooltipInfo: `${new Date(d.Date).toDateString()}<br><b>${Number(d.SP500).toFixed(2)}</b>`
             };
         }).then(function (d) {
-            const data = d.filter((entry) => entry.date.getFullYear() >= 1980)
+            const data = d.filter((entry) => entry.date.getFullYear() >= startYear && entry.date.getFullYear() <= endYear)
                 .sort((a, b) => a.date.getTime() - b.date.getTime());
 
             const x = d3
@@ -42,6 +45,12 @@ export default function HistoricalData() {
                 .scaleLinear()
                 .domain([0, d3.max(data, (d) => d.price) as number + 500])
                 .range([height, 0]);
+
+            const svg = d3.select(svgRef.current);
+            svg.selectAll(".annotation-group")
+                .remove();
+
+            svg.selectAll(".grid").remove();
 
             if (axisBottom.current) {
                 d3.select(axisBottom.current)
@@ -63,8 +72,6 @@ export default function HistoricalData() {
                     .attr("stroke", "#4e4e4e")
                     .attr("stroke-dasharray", "1 1");
             }
-
-            const svg = d3.select(svgRef.current);
 
             const line = d3.line<Price>()
                 .x((d) => x(d.date))
@@ -290,13 +297,14 @@ export default function HistoricalData() {
                 .annotations(annotations);
 
             svg.append("g")
+                .attr("class", "annotation-group")
                 .call(makeAnnotations as unknown as (g: d3.Selection<SVGGElement, unknown, null, undefined>) => void);
 
             svg.append("text")
                 .attr("class", "x-axis-title")
                 .attr("text-anchor", "middle")
                 .attr("x", margin.left + width / 2)
-                .attr("y", height + 80)
+                .attr("y", height + 50)
                 .style("fill", "#fff")
                 .text("Year");
 
@@ -309,9 +317,17 @@ export default function HistoricalData() {
                 .style("fill", "#fff")
                 .text("Index Value");
         });
-    }, []);
+    }, [startYear, endYear]);
 
+    const handleStartChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const newStart = Number(e.target.value);
+        setStartYear(newStart);
+    };
 
+    const handleEndChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const newEnd = Number(e.target.value);
+        setEndYear(newEnd);
+    };
 
     return (
         <div id="container" style={{ position: "relative", height: height + margin.top + margin.bottom, display: 'flex' }}>
@@ -338,11 +354,33 @@ export default function HistoricalData() {
                         <path id="line" />
                     </g>
                 </svg>
+                <div>
+                    <label>
+                        Start Year: {startYear}
+                        <input
+                            type="number"
+                            value={startYear}
+                            min={1871}
+                            max={endYear - 1}
+                            onChange={handleStartChange}
+                        />
+                    </label>
+                    <label style={{ marginLeft: '0.5rem' }}>
+                        End Year: {endYear}
+                        <input
+                            type="number"
+                            value={endYear}
+                            min={startYear + 1}
+                            max={2023}
+                            onChange={handleEndChange}
+                        />
+                    </label>
+                </div>
             </div>
             <div>
                 <p style={{ paddingRight: '0.8rem' }}>
-                    The chart on the left shows the historical performance of the S&P 500 Index from 1980 to 2023. 
-                    The index only uses free-floating shares, or the shares that are available to the public, to 
+                    The chart on the left shows the historical performance of the S&P 500 Index from 1980 to 2023.
+                    The index only uses free-floating shares, or the shares that are available to the public, to
                     calculate the market cap. The index is calculated by summing the market caps of each company
                     and dividing by a divisor, a value that is not publicly released.
                     <br></br><br></br>
@@ -352,9 +390,9 @@ export default function HistoricalData() {
                     inflation causing the rise of prices, and companies reinvesting profit earnings towards growth opportunities.
                     <br></br><br></br>
                     As mentioned before, the S&P 500 has been used as a key benchmark for the U.S. economy.
-                    The chart displays how the index responded with significant economical events in history. 
+                    The chart displays how the index responded with significant economical events in history.
                     For example, the Covid-19 Pandemic significantly declined the economy, with this impact
-                    being also visible in the S&P 500 Index in the year 2020 when it dropped significantly.  
+                    being also visible in the S&P 500 Index in the year 2020 when it dropped significantly.
                 </p>
             </div>
         </div>

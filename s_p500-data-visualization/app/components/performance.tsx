@@ -251,7 +251,7 @@ export default function Performance() {
             </div>
             <div>
                 <p style={{ padding: '0.5rem', paddingRight: '1.75rem' }}>
-                    The S&P 500 Index cannot be directly invested in as it is an index. However, there are a number of index
+                    The S&P 500 Index cannot be directly invested in as it is simply an index. However, there are a number of index
                     funds that direct and track its performance. An example is the Vanguard 500 Index Fund
                     that tracks the price and performance of the S&P 500 Index by investing its total net assets in its
                     companies stocks accounting for each individual weight.
