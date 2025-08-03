@@ -3,6 +3,7 @@ import styles from "../page.module.css";
 import * as d3 from "d3";
 import { useEffect, useRef, useState } from "react";
 import { annotation, annotationLabel } from "d3-svg-annotation";
+import { getBasePath } from "../../next.config";
 
 type PerformanceItem = {
     year: number;
@@ -30,8 +31,10 @@ export default function Performance() {
 
     const [moneyInvested, setMoneyInvested] = useState(10);
 
+    const basePath = getBasePath();
+
     useEffect(() => {
-        d3.csv("/data/history.csv", function (d) {
+        d3.csv(`${basePath}/data/history.csv`, function (d) {
             return {
                 year: +d.Year,
                 performance: +d.Performance

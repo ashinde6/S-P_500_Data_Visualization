@@ -3,6 +3,7 @@ import * as d3 from "d3";
 import styles from "../page.module.css";
 import { useEffect, useRef } from "react";
 import { annotation, annotationLabel } from "d3-svg-annotation";
+import { getBasePath } from "../../next.config";
 
 type Price = {
     date: Date;
@@ -19,8 +20,10 @@ export default function HistoricalData() {
     const height = 500;
     const margin = { top: 30, right: 50, bottom: 70, left: 70 };
 
+    const basePath = getBasePath();
+
     useEffect(() => {
-        d3.csv("/data/index_data.csv", function (d) {
+        d3.csv(`${basePath}/data/index_data.csv`, function (d) {
             return {
                 date: new Date(d.Date),
                 price: +d.SP500,

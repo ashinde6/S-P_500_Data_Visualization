@@ -1,6 +1,7 @@
 "use client";
 import * as d3 from "d3";
 import { useEffect, useRef } from "react";
+import { getBasePath } from "../../next.config";
 
 type Company = {
     company: string;
@@ -20,10 +21,12 @@ export default function Companies() {
 
     const colors = d3.schemeSet2;
 
+    const basePath = getBasePath();
+
     useEffect(() => {
         Promise.all([
-            d3.csv("/data/sp.csv"),
-            d3.csv("/data/sp_performance.csv")
+            d3.csv(`${basePath}/data/sp.csv`),
+            d3.csv(`${basePath}/data/sp_performance.csv`)
         ]).then(([companies, performance]) => {
             const companyReturns = new Map<string, string>();
             performance.forEach((d) => {
@@ -127,12 +130,12 @@ export default function Companies() {
                     each block corresponding to the company's market cap weighting as of August 2nd, 2025. The top 3 holdings of 
                     the index are Nvidia, Microsoft, and Apple. A company's weighting provides crucial information on the impact 
                     of overall index. Those with higher weighting create a larger impact on the overall index compared to the 
-                    companies with smaller weightings. Hovering over a specific block in the treemap will open a tooltip with the 
+                    companies with smaller weightings. A limitation of the S&P 500 Index being market-cap-weighted is when certain company stocks become overvalued.
+                    This causes the index to ultimately inflate if the stocks have higher weight.  
+                    <br></br><br></br>
+                    Hovering over a specific block in the treemap will open a tooltip with the 
                     specific market cap weighting of that company in the index. It also specifies the year to date price return 
                     amount for that specific company stock.
-                    <br></br><br></br>
-                    A limitation of the S&P 500 Index being market-cap-weighted is when certain company stocks become overvalued.
-                    This causes the index to ultimately inflate if the stocks have higher weight.  
                 </p>
             </div>
             <div style={{ justifyItems: 'center', marginRight: '0.75rem' }}>
