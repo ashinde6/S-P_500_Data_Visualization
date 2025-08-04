@@ -18,8 +18,6 @@ export default function Companies() {
     const width = 800;
     const height = 550;
 
-    const colors = d3.schemeSet2;
-
     const basePath = getBasePath();
 
     useEffect(() => {
@@ -49,6 +47,7 @@ export default function Companies() {
                 .domain([minYtdReturn, 0, maxYtdReturn])
                 .range(["red", "white", "green"]);
 
+            // establish the root of the treemap
             const root = d3
                 .hierarchy({ children: companyData } as any)
                 .sum((d) => (d as Company).weight)
@@ -61,6 +60,7 @@ export default function Companies() {
 
             const svg = d3.select(svgRef.current);
 
+            // create tooltip with appropriate styling
             const tooltip = d3.select(containerRef.current)
                 .append("div")
                 .style("opacity", 0)
@@ -75,6 +75,7 @@ export default function Companies() {
                 .style("pointer-events", "none")
                 .style("z-index", "10");
 
+            // define hover over events
             const nodes = svg
                 .selectAll("g")
                 .data(root.leaves() as d3.HierarchyRectangularNode<Company>[])
@@ -102,6 +103,7 @@ export default function Companies() {
                     tooltip.style("opacity", 0);
                 });
 
+            // create the rectangles within the treemap
             nodes
                 .append("rect")
                 .attr("width", (d) => d.x1 - d.x0)
@@ -121,6 +123,7 @@ export default function Companies() {
                 .attr("fill", "black")
                 .style("pointer-events", "none");
 
+            // create the treemap legend
             const legendSvg = d3.select("#color-legend");
 
             const defs = legendSvg.append("defs");

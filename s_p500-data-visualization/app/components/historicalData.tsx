@@ -30,7 +30,7 @@ export default function HistoricalData() {
             return {
                 date: new Date(d.Date),
                 price: +d.SP500,
-                tooltipInfo: `${new Date(d.Date).toDateString()}<br><b>${Number(d.SP500).toFixed(2)}</b>`
+                tooltipInfo: `Year: ${new Date(d.Date).toDateString()}<br><b>Index Value: ${Number(d.SP500).toFixed(2)}</b>`
             };
         }).then(function (d) {
             const data = d.filter((entry) => entry.date.getFullYear() >= startYear && entry.date.getFullYear() <= endYear)
@@ -52,6 +52,7 @@ export default function HistoricalData() {
 
             svg.selectAll(".grid").remove();
 
+            // create graph axes
             if (axisBottom.current) {
                 d3.select(axisBottom.current)
                     .call(d3.axisBottom(x).ticks(d3.timeYear.every(2)));
@@ -73,6 +74,7 @@ export default function HistoricalData() {
                     .attr("stroke-dasharray", "1 1");
             }
 
+            // create the line of the chart
             const line = d3.line<Price>()
                 .x((d) => x(d.date))
                 .y((d) => y(d.price))
@@ -115,6 +117,7 @@ export default function HistoricalData() {
                     .style("opacity", 0);
             }
 
+            // establish hover over behavior
             svg
                 .append("rect")
                 .attr("class", "overlay")
@@ -158,6 +161,8 @@ export default function HistoricalData() {
 
                 });
 
+            
+            // create graph annotations
             const annotations = [];
 
             const covidAnnotationDate = new Date(2020, 1, 29);
@@ -300,6 +305,7 @@ export default function HistoricalData() {
                 .attr("class", "annotation-group")
                 .call(makeAnnotations as unknown as (g: d3.Selection<SVGGElement, unknown, null, undefined>) => void);
 
+            // define axis titles
             svg.append("text")
                 .attr("class", "x-axis-title")
                 .attr("text-anchor", "middle")

@@ -59,15 +59,15 @@ export default function Performance() {
                 .domain([0, d3.max(investmentGrowth, (d) => d.value) as number * 1.5 + 5])
                 .range([innerHeight, 0]);
 
-
-
             const svg = d3.select(svgRef.current);
 
+            // reset svg
             svg.selectAll(".investment-line").remove();
             svg.selectAll(".investment-dots").remove();
             svg.selectAll(".annotation").remove();
             svg.selectAll(".grid").remove();
 
+            // create axes
             if (axisBottom.current) {
                 d3.select(axisBottom.current)
                     .call(d3.axisBottom(x).ticks(d3.timeYear.every(1)));
@@ -89,6 +89,7 @@ export default function Performance() {
                     .attr("stroke-dasharray", "1 1");
             }
 
+            // create line of the chart
             const line = d3.line<InvestmentEntry>()
                 .x((d) => x(d.year))
                 .y((d) => y(d.value));
@@ -115,6 +116,7 @@ export default function Performance() {
                 .attr("r", 5)
                 .attr("fill", "#2ec4b6");
 
+            // create chart tooltip
             let tooltip = d3.select(containerRef.current).select<HTMLDivElement>(".tooltip");
 
             if (tooltip.empty()) {
@@ -132,7 +134,7 @@ export default function Performance() {
                     .style("font-size", "14px");
             }
 
-
+            // establish hover over behavior
             svg.append("g")
                 .attr("class", "investment-dots")
                 .attr("transform", `translate(${margin.left},${margin.top})`)
@@ -158,6 +160,7 @@ export default function Performance() {
                         .style("color", "#000");
                 });
 
+            // create graph annotations
             const annotations = [
                 {
                     note: {
@@ -188,6 +191,7 @@ export default function Performance() {
             svg.append("g")
                 .call(makeAnnotations as unknown as (g: d3.Selection<SVGGElement, unknown, null, undefined>) => void);
 
+            // create axis titles
             svg.append("text")
                 .attr("class", "x-axis-title")
                 .attr("text-anchor", "middle")

@@ -20,8 +20,11 @@ export default function Home() {
             <p>
               The S&P 500 is considered one of the best tools to 
               assess U.S. equities, stock market, and economy because of the broad performance scope 
-              across 500 large-cap companies within the US economy. This narrative visualization will dive 
-              deeper into the historical performance of the S&P 500 Index. 
+              across 500 large-cap companies within the US economy. 
+            <br></br><br></br>
+              This narrative visualization will dive deeper into the historical performance of the S&P 
+              500 Index. Data used to create the visuals were retrieved from these sources: <a href="https://datahub.io/core/s-and-p-500#source-data-construction" style={{ color: "#2ec4b6" }}>source1</a>, <a href="https://www.slickcharts.com/sp500" style={{ color: "#2ec4b6" }}>source 2</a>, <a href="https://www.slickcharts.com/sp500/returns" style={{ color: "#2ec4b6" }}>source3</a>.
+              Please scroll down to navigate through the visualization.
             </p>
           </div>
         </section>
